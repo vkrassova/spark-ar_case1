@@ -1,0 +1,31 @@
+const NativeUI = require('NativeUI')
+const Textures = require('Textures')
+const Patches = require('Patches')
+
+Promise.all ([
+  Textures.findFirst('a1'),
+  Textures.findFirst('a2')
+]).then(onReady)
+
+function onReady (assets) {
+  const texture0 = assets[0]
+  const texture1 = assets[1]
+
+  const picker = NativeUI.picker
+  const index = 0
+  const configuration = {
+    selectedIndex: index,
+    items: [
+      { image_texture: texture0 },
+      { image_texture: texture1 }
+    ]
+  }
+
+  picker.configure(configuration)
+
+  picker.visible = true
+
+  picker.selectedIndex.monitor().select('newValue').subscribe(function (index) {
+    Patches.inputs.setScalar('selection', index)
+  })
+}
